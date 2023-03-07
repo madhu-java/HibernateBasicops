@@ -1,0 +1,51 @@
+package com.madhu.test;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import com.madhu.model.Student;
+import com.madhu.util.HibernateUtil;
+//add update in hibetnate.cfg.xml <property name="hibernate.hbm2ddl.auto">validate</property>
+public class SaveorUpdateApp {
+
+	public static void main(String[] args) {
+		Session session=null;
+		Transaction transaction=null;
+		boolean flag=false;
+	
+		try {
+		session = HibernateUtil.getSession();
+		if(session!=null) {
+			transaction=session.beginTransaction();
+		}
+		if(transaction!=null) {
+			Student student = new Student();
+			student.setSid(16);
+			student.setSname("sachin");
+			student.setSaddress("MI");
+			student.setSage(36);
+			
+			session.saveOrUpdate(student);
+			flag=true;
+			
+		}
+		}catch(HibernateException e) {
+			e.printStackTrace();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			if(flag) {
+				transaction.commit();
+				System.out.println("record updated successfully..");
+			}else {
+				transaction.rollback();
+				System.out.println("record is not updated successfully..");
+			}
+			HibernateUtil.closeSession(session);
+			HibernateUtil.closesessionFactory();
+		}
+		
+	}
+
+}
